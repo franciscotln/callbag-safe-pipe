@@ -1,0 +1,24 @@
+{
+  "author": "Francisco Tavares de Lima Neto",
+  "description": "👜 Utility like callbag-pipe but wraps the operators calls in a tryCatch block, sending an eventual exception to the sink",
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "~4.9.1",
+    "callbag-basics": "^3.0.0",
+    "callbag-subscribe": "^1.5.0"
+  },
+  "keywords": [
+    "callbag"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "callbag-safe-pipe",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franciscotln/callbag-safe-pipe.git"
+  },
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "version": "1.0.0"
+}
