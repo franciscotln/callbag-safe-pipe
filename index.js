@@ -5,10 +5,10 @@ const safePipe = (...cbs) => {
     if (start !== 0) return;
     let talkBack;
     let done;
-		const endWithError = (err) => {
-			done = true;
-			sink(2, err);
-			if (typeof talkBack === 'function') talkBack(2);
+    const endWithError = (err) => {
+      done = true;
+      sink(2, err);
+      if (typeof talkBack === 'function') talkBack(2);
     };
     try {
       source(0, (t, d) => {
