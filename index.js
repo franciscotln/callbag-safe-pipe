@@ -4,17 +4,25 @@ const safePipe = (...cbs) => {
   const reducer = (source, operator) => operator((start, sink) => {
     if (start !== 0) return;
     let talkBack;
-    source(0, (t, d) => {
-      if (t === 0) {
-        talkBack = d;
-      }
-      try {
-        sink(t, d);
-      } catch (e) {
-        sink(2, e);
-        if (typeof talkBack === 'function') talkBack(2);
-      }
-    });
+    let done;
+		const endWithError = (err) => {
+			done = true;
+			sink(2, err);
+			if (typeof talkBack === 'function') talkBack(2);
+    };
+    try {
+      source(0, (t, d) => {
+        if (done) return;
+        if (t === 0) talkBack = d;
+        try {
+          sink(t, d);
+        } catch (e) {
+          endWithError(e);
+        }
+      });
+    } catch(err) {
+      endWithError(err);
+    }
   });
   const composedSource = cbs.reduce(reducer, originalSource);
 

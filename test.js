@@ -78,6 +78,39 @@ test('Iterable: it catches the error thrown in the map operator and redirects it
   );
 });
 
+test('Iterable: it catches the error thrown by the source fromIter() being called without argument', t => {
+  safePipe(
+    fromIter(),
+    map(n => n + 1),
+    subscribe({
+      next() {
+        t.equals(true, false, 'never gets called');
+        t.end();
+      },
+      error(e) {
+        t.equals("Cannot read property 'Symbol(Symbol.iterator)' of undefined", e.message);
+        t.end();
+      }
+    })
+  );
+});
+
+test('Iterable: it catches the error thrown inside the subscriber', t => {
+  safePipe(
+    fromIter([1, 2, 3]),
+    map(n => n + 1),
+    subscribe({
+      next(number) {
+        const throwing = number.a.doesntExist;
+      },
+      error(e) {
+        t.equals("Cannot read property 'doesntExist' of undefined", e.message);
+        t.end();
+      }
+    })
+  );
+});
+
 test('Iterable: it does NOT catch the error when subscribing outside the safePipe function', t => {
   const stream = safePipe(
     fromIter([0, 1, 2]),
@@ -86,20 +119,6 @@ test('Iterable: it does NOT catch the error when subscribing outside the safePip
 
   t.throws(() => {
     subscribe(() => {})(stream);
-  });
-  t.end();
-});
-
-test('Iterable: it does NOT catch the error thrown by the source fromIter() being called without argument', t => {
-  t.throws(() => {
-    safePipe(
-      fromIter(),
-      map(n => n + 1),
-      subscribe({
-        next() {},
-        error() {}
-      })
-    );
   });
   t.end();
 });
